@@ -46,9 +46,6 @@ public class Todo {
                     
                     if(status.contains("Welcome") ) {
                         loggedIn = true;
-                    } else if (status.equals("back")) {
-                        loggedIn = true;
-                        option = null;
                     }
                 }
             }
