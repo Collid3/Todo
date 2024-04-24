@@ -19,6 +19,7 @@ public class Register {
             
             if (checkUserName(username)) {
                 correctUsernameFormat = true;
+                System.out.println("Username successfully captured");
             } else {
                 System.out.println("Username is not correctly formatted, please ensure that your username contains an underscore and is no more than 5 characters in length");
             }
@@ -30,6 +31,7 @@ public class Register {
             
             if (checkPasswordComplexity(password)) {
                 correctPasswordFormat = true;
+                System.out.println("Password successfully captured");
             } else {
                 System.out.println("Password is not correctly formatted, please ensure that the password contains at least 8 characters, a capital letter, a number and a special character");
             }
@@ -61,6 +63,7 @@ public class Register {
     public boolean checkPasswordComplexity (String password) {
         boolean valid = false;
         
+        // REGEX special characters
         Pattern specialCharacters = Pattern.compile("[^A-Za-z0-9]");
         Pattern upperCases = Pattern.compile("[A-Z]");
         
@@ -75,9 +78,11 @@ public class Register {
         // check if password contains digit
         boolean hasDigit = false;
 
+        // Brockie@20 -> ['B', 'r', 'o', 'c'...]  -> {'B' a digit? }
         for (char letter : password.toCharArray()) {
             if (Character.isDigit(letter)) {
                 hasDigit = true;
+                break;
             }
         }
         
@@ -88,40 +93,27 @@ public class Register {
         return valid;
     }
     
-    public String registerUser (String username, String password, String firstName, String lastName) throws SQLException {        
-        if (!checkUserName(username)) {
-            System.out.println("Username is not correctly formatted, please ensure that your username contains an underscore and is no more than 5 characters in length");
-        } else {
-            System.out.println("Username successfully captured");
+    public String registerUser (String username, String password, String firstName, String lastName) throws SQLException {
+        // generate random Id for a user
+        String uniqueID = UUID.randomUUID().toString();
+
+        // save user info to the database
+        try {
+            System.out.println("Saving user info to database...");
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/todo", "jerry", "Incorrect#11");
+
+            String query = "INSERT INTO user VALUES ('"+uniqueID + "','" + username + "', '" + password +"', '" + firstName + "', '" + lastName + "')";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.executeUpdate();
+
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Something went wrong. Pleasae try again");
         }
-        
-        if (!checkPasswordComplexity(password)){
-            return "Password is not correctly formatted, please ensure that the password contains at least 8 characters, a capital letter, a number and a special character";
-        } else {
-            System.out.println("Password successfully captured");
-            System.out.println("Saving info to the database...");
-            
-            // generate random Id for a user
-            String uniqueID = UUID.randomUUID().toString();
-            
-            // save user info to the database
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/todo", "jerry", "Incorrect#11");
-                
-                String query = "INSERT INTO user VALUES ('"+uniqueID + "','" + username + "', '" + password +"', '" + firstName + "', '" + lastName + "')";
-                PreparedStatement statement = connection.prepareStatement(query);
-                
-                statement.executeUpdate();
-                
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
-                System.out.println("Something went wrong. Pleasae try again");
-            }
-            
-            return "Username and password correctly formatted. Account successfully created";
-        }
-        
+
+        return "Username and password correctly formatted. Account successfully created";
     }
     
 }
