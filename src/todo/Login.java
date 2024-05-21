@@ -1,64 +1,130 @@
 package todo;
-import java.sql.ResultSet;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.sql.SQLException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Login {
-    String firstName = null, lastName = null;
+    Scanner scanner = new Scanner(System.in);
     
-    public String returnLoginStatus() throws ClassNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-        String username, password;
-        String loginStatus = null;
+    String firstName = "", lastName = "", username = "", password = "";
+    
+    public String returnLoginStatus() {
+        String loginStatus;
         
-        while(loginStatus == null) {
-            System.out.print("Enter first name: ");
-            username = scanner.nextLine();
-            
-            System.out.print("Enter password: ");
-            password = scanner.nextLine();
-            
-            if (loginUser(username, password)) {
-                loginStatus = "Welcome " + firstName + "," + lastName + " it is great to see you.";
-            } else {
-                loginStatus = "Incorrect username or password. Please try again.";
-            }
+        if (loginUser()) {
+            Todo.loggedIn = true;
+            loginStatus = "Welcome " + firstName + "," + lastName + " it is great to see you.";
+        } else {
+            loginStatus = "Incorrect username or password. Try again.";
         }
         
         return loginStatus;
         
     }
     
-    private boolean loginUser(String username, String password) throws ClassNotFoundException {
-        boolean loginStatus = false;
+    public boolean checkUserName(String username) {
+        boolean valid = false;
         
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/todo", "jerry", "Incorrect#11");
-            Statement statement = connection.createStatement();
-            
-            String query = "SELECT * FROM user WHERE username ='" + username + "'";
-            ResultSet result = statement.executeQuery(query);
-            
-            while (result.next()) {
-                String dbUsername = result.getString("username");
-                String dbPassword = result.getString("password");
-                firstName = result.getString("firstname");
-                lastName = result.getString("lastname");
-                
-                if (dbUsername.equals(username) && dbPassword.equals(password)) {
-                    loginStatus = true;
-                }
+        if (username.length() <= 5 && username.contains("_")) {
+            valid = true;
+        } 
+
+        return valid;
+    }
+    
+    public boolean checkPasswordComplexity (String password) {
+        boolean valid = false;
+        
+        // REGEX special characters
+        Pattern specialCharacters = Pattern.compile("[^A-Za-z0-9]");
+        Pattern upperCases = Pattern.compile("[A-Z]");
+        
+        Matcher charMatcher = specialCharacters.matcher(password);
+        boolean hasSpecialCharacter = charMatcher.find();
+        
+        Matcher capMatcher = upperCases.matcher(password);
+        boolean hasCapitalLetter = capMatcher.find();
+        
+        boolean hasValidLength = password.length() > 8;
+        
+        // check if password contains digit
+        boolean hasDigit = false;
+
+        // Brockie@20 -> ['B', 'r', 'o', 'c'...]  -> {'B' a digit? }
+        for (char letter : password.toCharArray()) {
+            if (Character.isDigit(letter)) {
+                hasDigit = true;
+                break;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
-               
-        return loginStatus;
+        
+        if(hasValidLength && hasSpecialCharacter && hasDigit && hasCapitalLetter) {
+            valid = true;
+        }
+        
+        return valid;
+    }
+    
+    public String registerUser () {
+        // generate random Id for a user
+        String message = "";
+        boolean valid = false;
+        boolean failedAttempt = false;
+        
+        while(!valid) {
+            if (failedAttempt) {
+                System.out.println("Try again...");
+            } else {
+                System.out.println("Create An Account");
+            }
+            
+            System.out.print("Username: ");
+            username = scanner.nextLine();
+            
+            System.out.print("Password: ");
+            password = scanner.nextLine();
+            
+            if (!checkUserName(username) && !checkPasswordComplexity(password)) {
+                System.out.println("Password is not correctly formatted, please ensure that the password contains at least 8 charactersm, a capital letter, a number and a special character.");
+                System.out.println("Username is not correctly formatted, please ensure that your username contains an underscore and is no more than 5 characters in length.");
+            }
+            
+            if (checkUserName(username) && !checkPasswordComplexity(password)) {
+                System.out.println("Password is not correctly formatted, please ensure that the password contains at least 8 charactersm, a capital letter, a number and a special character.");
+            } else if ((checkPasswordComplexity(password) && !checkUserName(username))) {
+                System.out.println("Username is not correctly formatted, please ensure that your username contains an underscore and is no more than 5 characters in length.");
+            } 
+            
+            if (checkUserName(username) && checkPasswordComplexity(password)) {
+                System.out.print("First name: ");
+                firstName = scanner.nextLine();
+
+                System.out.print("Last name: ");
+                lastName = scanner.nextLine();
+                System.out.println("Account Successfully created.");
+                valid = true;
+            } else if (!failedAttempt) {
+                failedAttempt = true;
+            }
+        }
+        
+        return message;
+    }
+    
+    private boolean loginUser() {
+        boolean match = false;
+        String loginUsername, loginPassword;
+        
+        System.out.print("Username: ");
+        loginUsername = scanner.nextLine();
+
+        System.out.print("Password: ");
+        loginPassword = scanner.nextLine();
+        
+        if (username.equals(loginUsername) && password.equals(loginPassword)) {
+            match = true;
+        }
+        
+        return match;
     }
 }

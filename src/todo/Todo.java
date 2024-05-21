@@ -1,56 +1,47 @@
 package todo;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 
 public class Todo {
+    public static boolean loggedIn = false;
+    public static int noOfTasks;
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        Register register = new Register();
-        Login login = new Login();
-        
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String option = null;
-        boolean loggedIn = false;
-        
-        while (option == null) {
-            int choice;
-            
-            System.out.println("Select to open menu");
-            
-            System.out.println("1. Register");
-            System.out.println("2. Login");
-            
-            System.out.print("Enter here: ");
-            choice = scanner.nextInt();
-            
-            switch (choice) {
-                case 1 -> {
-                    option = "register";
-                    System.out.println("Create an account");
-                }
-                case 2 -> {
-                    option = "login";
-                    System.out.println("Login page");
-                }
-                default -> System.out.println("Invalid option");
-            }
+        Login login = new Login();
+
+        System.out.println(login.registerUser());
+        System.out.println("Login");
+        while (!loggedIn) {
+            System.out.println(login.returnLoginStatus());
         }
         
-        switch (option) {
-            case "register" -> register.view();
-            case "login" -> {
-                while(!loggedIn ) {
-                    String status = login.returnLoginStatus();
-                    System.out.println(status);
-                    
-                    if(status.contains("Welcome") ) {
-                        loggedIn = true;
-                    }
+        System.out.println("");
+        
+        // this keeps the app running
+        while (loggedIn) {
+            System.out.println("Select a number to choose a Menu");
+            System.out.println("1. Add task");
+            System.out.println("2. Show report (Coming soon)");
+            System.out.println("3. Exit");
+            System.out.print("Enter choice here: ");
+            int option = scanner.nextInt();
+            // go to new line since nextInt does not return a new line. You will see it a lot in this program
+            scanner.nextLine();
+            
+            switch (option) {
+                case 1 -> {
+                    System.out.print("Number of Tasks: ");
+                    noOfTasks = scanner.nextInt();
+                    scanner.nextLine();
+                    Task task = new Task(noOfTasks);
+                    break;
                 }
+                case 2 -> System.out.println("Coming soon");
+                case 3 -> System.exit(0);
             }
-            default -> option = null;
-                
+            
+            
         }
     };
 }
