@@ -40,8 +40,6 @@ public class Todo {
                 case 2 -> System.out.println("Coming soon");
                 case 3 -> System.exit(0);
             }
-            
-            
         }
     };
 }
