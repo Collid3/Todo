@@ -26,7 +26,6 @@ public class Task {
         taskNames = new String[noOfTasks];
         taskIDs = new String[noOfTasks];
         taskStatuses = new String[noOfTasks];
-        taskDurations = new int[noOfTasks];
         taskNumbers = new int[noOfTasks];
         taskDescriptions = new String[noOfTasks];
         taskDurations = new int[noOfTasks];
@@ -47,13 +46,10 @@ public class Task {
         return TaskID.toUpperCase();
     }
     
-    private String printTaskDetails() {
-        String taskDetails = "";
-        
+    private void printTaskDetails() {        
         JDialog dialog = new JDialog();
         dialog.setAlwaysOnTop(true);
         JOptionPane.showMessageDialog(dialog, "Task Information\nTask Status: " + status + "\nDeveloper Details: " + devDetails + "\nTask Number: " + taskNo + "\nTask Name: " + name + "\nTask Description: " + description + "\nTaskID: " + taskID + "\nDuration: " + duration + "hour(s)");
-        return taskDetails;
     }
     
     public int returnTotalHours(int[] taskDurations) {

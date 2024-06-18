@@ -179,8 +179,7 @@ public class Report {
             }
         }
         
-        // Response used for testing
-        String response = taskNames[index] + ", " + taskStatuses[index];
-        return response;
+        // String used for testing
+        return taskNames[index] + ", " + taskStatuses[index];
     }
 }
