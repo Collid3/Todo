@@ -3,17 +3,23 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class Login {
     Scanner scanner = new Scanner(System.in);
     
     String firstName = "", lastName = "", username = "", password = "";
     
     public String returnLoginStatus() {
-        String loginStatus;
+        String loginStatus, loginUsername, loginPassword;
+        System.out.print("Username: ");
+        loginUsername = scanner.nextLine();
+
+        System.out.print("Password: ");
+        loginPassword = scanner.nextLine();
         
-        if (loginUser()) {
+        if (loginUser(username, loginUsername, password, loginPassword)) {
             Todo.loggedIn = true;
-            loginStatus = "Welcome " + firstName + "," + lastName + " it is great to see you.";
+            loginStatus = "\nWelcome " + firstName + "," + lastName + " it is great to see you.";
         } else {
             loginStatus = "Incorrect username or password. Try again.";
         }
@@ -23,20 +29,14 @@ public class Login {
     }
     
     public boolean checkUserName(String username) {
-        boolean valid = false;
-        
-        if (username.length() <= 5 && username.contains("_")) {
-            valid = true;
-        } 
-
-        return valid;
+        return username.length() <= 5 && username.contains("_");
     }
     
     public boolean checkPasswordComplexity (String password) {
         boolean valid = false;
         
         // REGEX special characters
-        Pattern specialCharacters = Pattern.compile("[^A-Za-z0-9]");
+        Pattern specialCharacters = Pattern.compile("[^A-Za-z\\d]");
         Pattern upperCases = Pattern.compile("[A-Z]");
         
         Matcher charMatcher = specialCharacters.matcher(password);
@@ -50,7 +50,7 @@ public class Login {
         // check if password contains digit
         boolean hasDigit = false;
 
-        // Brockie@20 -> ['B', 'r', 'o', 'c'...]  -> {'B' a digit? }
+        // Brockie@20 -> ['B', 'r', 'o', 'c'...]  -> {is 'B' a digit? }
         for (char letter : password.toCharArray()) {
             if (Character.isDigit(letter)) {
                 hasDigit = true;
@@ -85,12 +85,12 @@ public class Login {
             password = scanner.nextLine();
             
             if (!checkUserName(username) && !checkPasswordComplexity(password)) {
-                System.out.println("Password is not correctly formatted, please ensure that the password contains at least 8 charactersm, a capital letter, a number and a special character.");
+                System.out.println("Password is not correctly formatted, please ensure that the password contains at least 8 characters, a capital letter, a number and a special character.");
                 System.out.println("Username is not correctly formatted, please ensure that your username contains an underscore and is no more than 5 characters in length.");
             }
             
             if (checkUserName(username) && !checkPasswordComplexity(password)) {
-                System.out.println("Password is not correctly formatted, please ensure that the password contains at least 8 charactersm, a capital letter, a number and a special character.");
+                System.out.println("Password is not correctly formatted, please ensure that the password contains at least 8 characters, a capital letter, a number and a special character.");
             } else if ((checkPasswordComplexity(password) && !checkUserName(username))) {
                 System.out.println("Username is not correctly formatted, please ensure that your username contains an underscore and is no more than 5 characters in length.");
             } 
@@ -111,17 +111,10 @@ public class Login {
         return message;
     }
     
-    private boolean loginUser() {
+    public boolean loginUser(String actualUsername, String loginUsername, String actualPassword, String loginPassword) {
         boolean match = false;
-        String loginUsername, loginPassword;
         
-        System.out.print("Username: ");
-        loginUsername = scanner.nextLine();
-
-        System.out.print("Password: ");
-        loginPassword = scanner.nextLine();
-        
-        if (username.equals(loginUsername) && password.equals(loginPassword)) {
+        if (actualUsername.equals(loginUsername) && actualPassword.equals(loginPassword)) {
             match = true;
         }
         
