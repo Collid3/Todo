@@ -26,8 +26,8 @@ public class Report {
             
             System.out.println("----------------------------------------------------------------------------------------------");
             System.out.println("");
-            allTasksDetails(taskNames, Developers, taskNumbers, taskIDs, taskStatuses, taskDurations, taskDescriptions);
-            System.out.println("\n" + longestDurationTask(Developers, taskDurations));
+            allTasksDetails();
+            System.out.println("\nLongest Duration Task: " + longestDurationTask());
             
             while (option != 6 ) {
                 System.out.println("");
@@ -42,10 +42,10 @@ public class Report {
                 System.out.println("----------------------------------------------------------------------------------------------");
 
                 switch (option) {
-                    case 1 -> allTasksDetails(taskNames, Developers, taskNumbers, taskIDs, taskStatuses, taskDurations, taskDescriptions);
+                    case 1 -> allTasksDetails();
                     case 2 -> {
                         System.out.println("Tasks with status Done.");
-                        doneTasks(taskStatuses, Developers, taskNames, taskDurations);
+                        doneTasks();
                     }
                     case 3 -> {
                         System.out.println("Search for a Task by completing the form");
@@ -53,7 +53,7 @@ public class Report {
                         String searchWord = scanner.nextLine();
 
                         System.out.println("\nSearch Results for \"" + searchWord + "\".");
-                        System.out.println(searchTask(searchWord, taskNames, Developers, taskStatuses));
+                        System.out.println(searchTask(searchWord));
                     }
                     case 4 -> {
                         System.out.println("\nSearch Developer Tasks by completing the form");
@@ -61,7 +61,7 @@ public class Report {
                         String developerName = scanner.nextLine();
 
                         System.out.println("");
-                        searchDeveloperTasks(developerName, Developers, taskNames, taskStatuses);
+                        searchDeveloperTasks(developerName);
                     }
                     case 5 -> {
                         System.out.println("\nDelete Tasks by completing the form");
@@ -69,9 +69,9 @@ public class Report {
                         String taskName = scanner.nextLine();
 
                         System.out.println("");
-                        System.out.println(deleteTask(taskName, Developers, taskNames, taskIDs, taskStatuses, taskDurations, taskNumbers, taskDescriptions));
+                        System.out.println(deleteTask(taskName));
                         System.out.println("");
-                        allTasksDetails(taskNames, Developers, taskNumbers, taskIDs, taskStatuses, taskDurations, taskDescriptions);
+                        allTasksDetails();
                     }
                     case 6 -> leaveReportPage = true;
                 }
@@ -81,7 +81,7 @@ public class Report {
         }
     }
     
-    public void doneTasks(String[] taskStatuses, String[] Developers, String[] taskNames, int[] taskDurations) {
+    public void doneTasks() {
         for (int i = 0; i < taskStatuses.length; i++) {
             if (taskStatuses[i].equals("Done")) {
                 System.out.format("%s\t%s\t%s\n", Developers[i], taskNames[i], taskDurations[i]);
@@ -89,7 +89,7 @@ public class Report {
         }
     }
     
-    public String longestDurationTask(String[] Developers, int[] taskDurations) {
+    public String longestDurationTask() {
         int longestDuration = 0;
         int index = 0;
         
@@ -100,17 +100,17 @@ public class Report {
             index = i;
         }
         
-        return "Longest Duration task: " + Developers[index] + ", " + taskDurations[index];
+        return Developers[index] + ", " + taskDurations[index];
     }
     
-    public void allTasksDetails(String[] taskNames, String[] Developers, int[] taskNumbers, String[] taskIDs, String[] taskStatuses, int[] taskDurations, String[] taskDescriptions) {
+    public void allTasksDetails() {
         System.out.println("All Tasks Report");
         for (int i = 0; i < taskStatuses.length; i++) {
             System.out.printf("\nTask Status: %s\nDeveloper Details: %s\nTask Number: %d\nTask Name: %s\nTask Description: %s\nTask ID: %s\nTask Duration: %s\n", taskStatuses[i], Developers[i], taskNumbers[i], taskNames[i], taskDescriptions[i], taskIDs[i], taskDurations[i]);
         }
     }
     
-    public String deleteTask (String taskName, String[] Developers, String[] taskNames, String[] taskIDs, String[] taskStatuses, int[] taskDurations, int[] taskNumbers, String[] taskDescriptions) {
+    public String deleteTask (String taskName) {
         int index = 0;
         String[] newDevelopers = new String[taskNames.length - 1];
         String[] newTaskNames = new String[taskNames.length - 1];
@@ -154,7 +154,7 @@ public class Report {
         return "Entry \"" + taskName + "\" successfully deleted";
     }
     
-    public String searchTask(String taskName, String[] taskNames, String[] Developers, String[] taskStatuses) {
+    public String searchTask(String taskName) {
         String response = "";
         int index = 0;
         
@@ -167,7 +167,7 @@ public class Report {
         return response;
     }
     
-    public String searchDeveloperTasks(String developerName, String[] Developers, String[] taskNames, String[] taskStatuses) {
+    public String searchDeveloperTasks(String developerName) {
         int index = 0;
         
         System.out.println("Developer Tasks");

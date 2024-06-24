@@ -33,7 +33,7 @@ public class Task {
     }
     
     public void main() {
-        createTask(noOfTasks);
+        createTask();
     }
     
     public boolean checkTaskDescription (String Description) {
@@ -60,7 +60,7 @@ public class Task {
         return taskHours;
     }
     
-    public void createTask(int noOfTasks) {
+    public void createTask() {
         while(taskNo < noOfTasks) {
             System.out.println("Add Task " + (taskNo + 1));
 

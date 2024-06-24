@@ -24,10 +24,10 @@ public class ReportTest {
     
     @Test
     public void testLongestDuration() {
-        report.longestDurationTask(Developers, taskDurations);
+        report.longestDurationTask();
         String expected = "Glenda Oberholzer, 11";
         
-        assertEquals(expected, report.longestDurationTask(Developers, taskDurations));
+        assertEquals(expected, report.longestDurationTask());
     }
     
     @Test
@@ -38,7 +38,7 @@ public class ReportTest {
 
         
         System.out.println("Here");
-        assertEquals(message, report.deleteTask(taskName, Developers, taskNames, taskIDs, taskStatuses, taskDurations, taskNumbers, taskDescriptions));
+        assertEquals(message, report.deleteTask(taskName));
     }
     
     @Test
@@ -46,7 +46,7 @@ public class ReportTest {
         String taskName = "Create Login";
         String expected = "Create Login, Mike Smith, To Do";
         
-        assertEquals(expected, report.searchTask(taskName, taskNames, Developers, taskStatuses));
+        assertEquals(expected, report.searchTask(taskName));
     }
     
     @Test
@@ -55,6 +55,6 @@ public class ReportTest {
         
         String expected = "Create Reports, Done";
         
-        assertEquals(expected, report.searchDeveloperTasks(developer, Developers, taskNames, taskStatuses));
+        assertEquals(expected, report.searchDeveloperTasks(developer));
     }
 }
